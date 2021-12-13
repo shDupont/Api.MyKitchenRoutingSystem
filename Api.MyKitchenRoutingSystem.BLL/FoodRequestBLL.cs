@@ -11,13 +11,13 @@ namespace Api.MyKitchenRoutingSystem.BLL
 {
     public class FoodRequestBLL
     {
-        private readonly TodoContextBLL _context;
-        public FoodRequestBLL(TodoContextBLL context)
+        private readonly TodoContextMOD _context;
+        public FoodRequestBLL(TodoContextMOD context)
         {
             _context = context;
         }
 
-        private static FoodRequestToDoDTOMOD FoodRequestItemToDoDTO(FoodRequestItemMOD foodRequestItem) =>
+        public static FoodRequestToDoDTOMOD FoodRequestItemToDoDTOBLL(FoodRequestItemMOD foodRequestItem) =>
         new FoodRequestToDoDTOMOD
         {
             Id = foodRequestItem.Id,
@@ -55,14 +55,14 @@ namespace Api.MyKitchenRoutingSystem.BLL
             return from requestedFood in _context.FoodRequestToDo where requestedFood.Type == FoodTypeMOD.Desert select requestedFood;
         }
 
-        public async Task<List<FoodRequestToDoDTOMOD>> GetAllFoodRequestsToDoBLL()
+        public IQueryable<FoodRequestToDoDTOMOD> GetAllFoodRequestsToDoBLL()
         {
-            return _context.FoodRequestToDo.Select(x => FoodRequestItemToDoDTO(x)).ToList();
+            return _context.FoodRequestToDo.Select(x => FoodRequestItemToDoDTOBLL(x));
         }
 
-        public async Task<ActionResult<FoodRequestItemMOD>> GetFoodRequestToDoBLL(long id)
+        public FoodRequestItemMOD GetFoodRequestToDoBLL(long id)
         {
-            return await _context.FoodRequestToDo.FindAsync(id);
+            return  _context.FoodRequestToDo.Find(id);
         }
 
         public async Task<int> PostFoodRequestBLL(FoodRequestItemMOD foodRequest)

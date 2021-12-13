@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Api.MyKitchenRoutingSystem.MOD
 {
-    public class TodoContextBLL : DbContext
+    public class TodoContextMOD : DbContext
     {
-        public TodoContextBLL(DbContextOptions<TodoContextBLL> options)
+        public TodoContextMOD(DbContextOptions<TodoContextMOD> options)
             : base(options)
         {
         }

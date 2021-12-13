@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Api.MyKitchenRoutingSystem.Models;
 using Api.MyKitchenRoutingSystem.MOD;
+using Api.MyKitchenRoutingSystem.BLL;
+using Api.MyKitchenRoutingSystem.BLL.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.MyKitchenRoutingSystem
 {
@@ -29,16 +32,25 @@ namespace Api.MyKitchenRoutingSystem
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            
             services.AddControllers();
+            services.AddDbContext<TodoContextMOD>(opt =>
+                                                opt.UseInMemoryDatabase("TodoList"));
+
+            services.AddTransient<FoodRequestBLL>();
+
             services.AddDbContext<TodoContext>(opt =>
                                                 opt.UseInMemoryDatabase("TodoList"));
+
+            services.AddTransient<FoodRequestItem>();
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TodoApi", Version = "v1" });
             });
 
-            services.AddTransient<TodoContextBLL>();
+            
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

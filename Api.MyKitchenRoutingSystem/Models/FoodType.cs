@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Api.MyKitchenRoutingSystem.Models
 {
-    public enum FoodType
+    public enum FoodType 
     {
         Fries, 
         Grill, 

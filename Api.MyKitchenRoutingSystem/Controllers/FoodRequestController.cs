@@ -9,11 +9,7 @@ using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
 using Api.MyKitchenRoutingSystem.BLL;
 using Api.MyKitchenRoutingSystem.MOD;
-
-
-
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Api.MyKitchenRoutingSystem.BLL.Interface;
 
 namespace Api.MyKitchenRoutingSystem.Controllers
 {
@@ -21,15 +17,15 @@ namespace Api.MyKitchenRoutingSystem.Controllers
     [ApiController]
     public class FoodRequestController : ControllerBase 
     {
-        private readonly TodoContext _context;
-        private readonly FoodRequestBLL _foodRequestBLL;
+        //public readonly TodoContext _context;
+        public readonly FoodRequestBLL _foodRequestBLL;
+        
 
-        public FoodRequestController(TodoContext context)
+        public FoodRequestController(FoodRequestBLL foodRequestBLL)
         {
-            _context = context;
+            
+            _foodRequestBLL = foodRequestBLL;
         }
-
-        public FoodRequestController(FoodRequestBLL foodRequestBLL) => _foodRequestBLL = foodRequestBLL;
 
         [HttpGet("/GetFries")]
         public async Task<IActionResult> GetFries()
@@ -37,7 +33,7 @@ namespace Api.MyKitchenRoutingSystem.Controllers
 
             try
             {
-                if (_context.FoodRequestToDo.Count() == 0)
+                if (_foodRequestBLL.GetAllFoodRequestsToDoBLL().Count() == 0 || _foodRequestBLL.GetFriesBLL().Count() == 0)
                 {
                     return StatusCode(StatusCodes.Status204NoContent);
                 }
@@ -56,7 +52,7 @@ namespace Api.MyKitchenRoutingSystem.Controllers
         {
             try
             {
-                if (_context.FoodRequestToDo.Count() == 0)
+                if (_foodRequestBLL.GetAllFoodRequestsToDoBLL().Count() == 0 || _foodRequestBLL.GetGrillsBLL().Count() == 0)
                 {
                     return StatusCode(StatusCodes.Status204NoContent);
                 }
@@ -74,7 +70,7 @@ namespace Api.MyKitchenRoutingSystem.Controllers
         {
             try
             {
-                if (_context.FoodRequestToDo.Count() == 0)
+                if (_foodRequestBLL.GetAllFoodRequestsToDoBLL().Count() == 0 || _foodRequestBLL.GetSaladsBLL().Count() == 0)
                 {
                     return StatusCode(StatusCodes.Status204NoContent);
                 }
@@ -92,7 +88,7 @@ namespace Api.MyKitchenRoutingSystem.Controllers
         {
             try
             {
-                if (_context.FoodRequestToDo.Count() == 0)
+                if (_foodRequestBLL.GetAllFoodRequestsToDoBLL().Count() == 0 || _foodRequestBLL.GetDrinksBLL().Count() == 0)
                 {
                     return StatusCode(StatusCodes.Status204NoContent);
                 }
@@ -110,7 +106,7 @@ namespace Api.MyKitchenRoutingSystem.Controllers
         {
             try
             {
-                if (_context.FoodRequestToDo.Count() == 0)
+                if (_foodRequestBLL.GetAllFoodRequestsToDoBLL().Count() == 0 || _foodRequestBLL.GetDesertsBLL().Count() == 0)
                 {
                     return StatusCode(StatusCodes.Status204NoContent);
                 }
@@ -128,12 +124,12 @@ namespace Api.MyKitchenRoutingSystem.Controllers
         {
             try
             {
-                if (_context.FoodRequestToDo.Count() == 0)
+                if (_foodRequestBLL.GetAllFoodRequestsToDoBLL().Count() == 0 )
                 {
                     return StatusCode(StatusCodes.Status204NoContent);
                 }
 
-                return StatusCode(StatusCodes.Status200OK, await _foodRequestBLL.GetAllFoodRequestsToDoBLL());
+                return StatusCode(StatusCodes.Status200OK, _foodRequestBLL.GetAllFoodRequestsToDoBLL().ToList());
             }
             catch (Exception e)
             {
@@ -145,7 +141,7 @@ namespace Api.MyKitchenRoutingSystem.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<FoodRequestItem>> GetFoodRequestToDo(long id)
         {
-            var todoItem = await _foodRequestBLL.GetFoodRequestToDoBLL(id);
+            var todoItem =   _foodRequestBLL.GetFoodRequestToDoBLL(id);
             if (todoItem == null)
             {
                 return NotFound();
@@ -175,12 +171,6 @@ namespace Api.MyKitchenRoutingSystem.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFoodRequestToDo(long id)
         {
-            var todoItem = await _context.FoodRequestToDo.FindAsync(id);
-            if (todoItem == null)
-            {
-                return StatusCode(StatusCodes.Status404NotFound);
-            }
-
             try
             {
                 await _foodRequestBLL.DeleteFoodRequestToDoBLL(id);
